@@ -1,5 +1,8 @@
+import tkinter
+
 from Star import Star
 from StarCollection import StarCollection
+from tkinter_gui import StarManagerApp
 
 sun = Star("Sun", 0, 1, 1)
 sirius = Star("Sirius", 8.6, 2.1, 1.7)
@@ -20,3 +23,8 @@ star_collection.serialize_collection("stars.json")
 new_collection = StarCollection.deserialize_collection("stars.json")
 for star in new_collection.list_stars():
     print(star)
+
+
+root = tkinter.Tk()
+app = StarManagerApp(root)
+root.mainloop()
