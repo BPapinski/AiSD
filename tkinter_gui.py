@@ -3,31 +3,95 @@ from tkinter import messagebox, simpledialog
 from Star import Star
 from StarCollection import StarCollection
 
-
-
 class StarManagerApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Star Manager")
+        self.root.geometry("600x400")
+        self.root.configure(bg="#f0f0f5")  # Delikatny szary kolor tła
+
+        # Kolekcja gwiazd
         self.collection = StarCollection.deserialize_collection("stars.json")
 
+        # Główne okno aplikacji
+        header = tk.Label(
+            root, text="Star Manager", bg="#4a7a8c", fg="white", font=("Helvetica", 16, "bold"), pady=10
+        )
+        header.pack(fill=tk.X)
+
         # Lista gwiazd
-        self.listbox = tk.Listbox(root, width=50, height=15)
-        self.listbox.pack(pady=10)
+        self.listbox_frame = tk.Frame(root, bg="#f0f0f5")
+        self.listbox_frame.pack(pady=10, fill=tk.BOTH, expand=True)
+
+        self.listbox = tk.Listbox(
+            self.listbox_frame, width=80, height=15, font=("Helvetica", 12), bg="white", fg="black", selectbackground="#4a7a8c"
+        )
+        self.listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=10)
+
+        scrollbar = tk.Scrollbar(self.listbox_frame)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.listbox.config(yscrollcommand=scrollbar.set)
+        scrollbar.config(command=self.listbox.yview)
+
         self.update_listbox()
 
-        # Przyciski
-        self.add_button = tk.Button(root, text="Add Star", command=self.add_star)
-        self.add_button.pack(side=tk.LEFT, padx=5)
+        # Przyciski akcji
+        self.button_frame = tk.Frame(root, bg="#f0f0f5")
+        self.button_frame.pack(pady=10, fill=tk.X)
 
-        self.edit_button = tk.Button(root, text="Edit Star", command=self.edit_star)
-        self.edit_button.pack(side=tk.LEFT, padx=5)
+        tk.Button(
+            self.button_frame,
+            text="Add Star",
+            command=self.add_star,
+            bg="#4a7a8c",
+            fg="white",
+            font=("Helvetica", 12),
+            width=15,
+        ).pack(side=tk.LEFT, padx=10)
 
-        self.delete_button = tk.Button(root, text="Delete Star", command=self.delete_star)
-        self.delete_button.pack(side=tk.LEFT, padx=5)
+        tk.Button(
+            self.button_frame,
+            text="Edit Star",
+            command=self.edit_star,
+            bg="#4a7a8c",
+            fg="white",
+            font=("Helvetica", 12),
+            width=15,
+        ).pack(side=tk.LEFT, padx=10)
 
-        self.save_button = tk.Button(root, text="Save", command=self.save_to_file)
-        self.save_button.pack(side=tk.LEFT, padx=5)
+        tk.Button(
+            self.button_frame,
+            text="Delete Star",
+            command=self.delete_star,
+            bg="#4a7a8c",
+            fg="white",
+            font=("Helvetica", 12),
+            width=15,
+        ).pack(side=tk.LEFT, padx=10)
+
+        # Przyciski dolne (Save i Exit)
+        self.bottom_frame = tk.Frame(root, bg="#f0f0f5")
+        self.bottom_frame.pack(pady=10, fill=tk.X)
+
+        tk.Button(
+            self.bottom_frame,
+            text="Save",
+            command=self.save_to_file,
+            bg="#4a7a8c",
+            fg="white",
+            font=("Helvetica", 12),
+            width=20,
+        ).pack(side=tk.LEFT, padx=10)
+
+        tk.Button(
+            self.bottom_frame,
+            text="Exit",
+            command=root.quit,
+            bg="#4a7a8c",
+            fg="white",
+            font=("Helvetica", 12),
+            width=20,
+        ).pack(side=tk.RIGHT, padx=10)
 
     def update_listbox(self):
         """
@@ -35,7 +99,9 @@ class StarManagerApp:
         """
         self.listbox.delete(0, tk.END)
         for star in self.collection.list_stars():
-            self.listbox.insert(tk.END, f"{star.name} - {star.distance} ly")
+            self.listbox.insert(
+                tk.END, f"name: {star.name} - distance: {star.distance} - mass: {star.mass} - radius: {star.radius}"
+            )
 
     def add_star(self):
         """
@@ -62,7 +128,8 @@ class StarManagerApp:
         if not selected:
             messagebox.showwarning("Warning", "No star selected.")
             return
-        star_name = self.listbox.get(selected[0]).split(" - ")[0]
+        star_data = self.listbox.get(selected[0])
+        star_name = star_data.split(" - ")[0].replace("name: ", "")
         star = self.collection.find_star(star_name)
 
         if star:
@@ -70,20 +137,16 @@ class StarManagerApp:
             if not new_name:
                 return
             try:
-                new_distance = float(
-                    simpledialog.askstring("Input", "Enter new distance (light-years):", initialvalue=star.distance))
-                new_mass = float(
-                    simpledialog.askstring("Input", "Enter new mass (solar masses):", initialvalue=star.mass))
-                new_radius = float(
-                    simpledialog.askstring("Input", "Enter new radius (solar radii):", initialvalue=star.radius))
+                new_distance = float(simpledialog.askstring("Input", "Enter new distance (light-years):", initialvalue=star.distance))
+                new_mass = float(simpledialog.askstring("Input", "Enter new mass (solar masses):", initialvalue=star.mass))
+                new_radius = float(simpledialog.askstring("Input", "Enter new radius (solar radii):", initialvalue=star.radius))
                 star.name = new_name
                 star.distance = new_distance
                 star.mass = new_mass
                 star.radius = new_radius
                 self.update_listbox()
             except (ValueError, TypeError):
-                messagebox.showerror("Error",
-                                     "Invalid input. Please enter numeric values for distance, mass, and radius.")
+                messagebox.showerror("Error", "Invalid input. Please enter numeric values for distance, mass, and radius.")
 
     def delete_star(self):
         """
@@ -93,7 +156,8 @@ class StarManagerApp:
         if not selected:
             messagebox.showwarning("Warning", "No star selected.")
             return
-        star_name = self.listbox.get(selected[0]).split(" - ")[0]
+        star_data = self.listbox.get(selected[0])
+        star_name = star_data.split(" - ")[0].replace("name: ", "")
         self.collection.remove_star(star_name)
         self.update_listbox()
 
@@ -103,4 +167,3 @@ class StarManagerApp:
         """
         self.collection.serialize_collection("stars.json")
         messagebox.showinfo("Info", "Collection saved to stars.json!")
-
