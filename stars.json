@@ -1,6 +1,6 @@
 [
     {
-        "name": "Moon",
+        "name": "Sun",
         "distance": 3.0,
         "mass": 2.0,
         "radius": 3.0
@@ -25,12 +25,6 @@
     },
     {
         "name": "nowa",
-        "distance": 2.0,
-        "mass": 3.0,
-        "radius": 4.0
-    },
-    {
-        "name": "aaa",
         "distance": 2.0,
         "mass": 3.0,
         "radius": 4.0
