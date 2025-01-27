@@ -1,23 +1,5 @@
 [
     {
-        "name": "Sun",
-        "distance": 3.0,
-        "mass": 2.0,
-        "radius": 3.0
-    },
-    {
-        "name": "Sirius",
-        "distance": 8.6,
-        "mass": 2.1,
-        "radius": 1.7
-    },
-    {
-        "name": "Betelgeuse",
-        "distance": 642.5,
-        "mass": 18,
-        "radius": 887
-    },
-    {
         "name": "a",
         "distance": 2.0,
         "mass": 3.0,
@@ -28,5 +10,35 @@
         "distance": 2.0,
         "mass": 3.0,
         "radius": 4.0
+    },
+    {
+        "name": "Sun",
+        "distance": 3.0,
+        "mass": 2.0,
+        "radius": 3.0
+    },
+    {
+        "name": "aaa",
+        "distance": 5.0,
+        "mass": 23.0,
+        "radius": 23.0
+    },
+    {
+        "name": "Sirius",
+        "distance": 8.6,
+        "mass": 2.1,
+        "radius": 1.7
+    },
+    {
+        "name": "asd",
+        "distance": 32.0,
+        "mass": 3.0,
+        "radius": 2.0
+    },
+    {
+        "name": "Betelgeuse",
+        "distance": 642.5,
+        "mass": 18,
+        "radius": 887
     }
 ]
